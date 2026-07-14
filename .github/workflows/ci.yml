@@ -1,0 +1,168 @@
+name: CI
+
+# trigger
+on:
+    push:
+        branches:
+            - main
+            - develop
+    pull_request:
+        branches:
+            - main
+            - develop
+
+# what to run
+jobs:
+    # what to do when rust code changes - (core engine + mcp server)
+    rust:
+        if: |
+            github.event_name == 'pull_request' ||
+            contains(github.event.head_commit.modified, 'crates/') ||
+            contains(github.event.head_commit.modified, 'Cargo.toml') ||
+            contains(github.event.head_commit.modified, 'Cargo.lock')
+
+        runs-on: ubuntu-latest
+
+        # do stuff
+        steps:
+            # checkout code - dwnld all rust code
+            - name: Checkout code
+              uses: actions/checkout@4
+
+            # install rust
+            - name: Install Rust
+              uses: dtolnay/rust-toolchain@stable
+
+            # cache rust deps
+            - name: Cache Rust Dependencies
+              uses: Swatinem/rus-cache@v2
+              with:
+                workspaces: |
+                    .
+
+            # check formatting
+            - name: Check Rust Formatting
+              run: cargo fmt -- --check
+
+            # run clippy linter
+            - name: Run Clippy
+              run: cargo clippy --all-targets --all-features -- -D warnings
+
+            # build
+            - name: Build Rust
+              run: cargo build --verbose
+
+            # run tests
+            - name: Run Rust Tests
+              run: cargo test --verbose
+
+    # what to do when go stuff changes
+    go:
+        if: |
+            github.event_name == 'pull_request' ||
+            contains(github.event.head_commit.modified, 'services/gateway')
+
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+                go-version: ['1.21', '1.22']
+
+        steps:
+            # download code
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            # install go
+            - name: Install Go
+              uses: actions/setup-go@v4
+              with:
+                go-version: ${{ matrix.go-version }}
+
+            # dwnld go modules
+            - name: Download Go Dependencies
+              working-directory: services/gateway
+              run: go mod download
+
+            # run go tests
+            - name: Run Go Tests
+              working-directory: services/gateway
+              run: go test -v ./...
+              
+            # build go binary
+            - name: Build Go Gateway
+              working-directory: services/gateway
+              run: go build -o gateway
+
+            # run go linter
+            - name: Run Go Lint
+              uses: golangci/golangci-lint-action@v3
+              with:
+                version: latest
+                working-directory: services/gateway
+
+    # what to do when react stuff changes
+    react:
+        if: |
+            github.event_name == 'pull_request' ||
+            contains(github.event.head_commit.modified, 'web/')
+
+        runs-on: ubuntu-latest
+
+        steps:
+            # code checkout
+            - name: Code Checkout
+              uses: actions/checkout@v4
+
+            # setup nodejs
+            - name: Setup Nodejs
+              uses: actions/setup-node@v4
+              with:
+                # cache npm installations
+                node-version: '18'
+                cache: 'npm'
+                cache-dependency-path: web/package-lock.json
+
+            # install npm dependencies
+            - name: Install Dependencies
+              working-directory: web
+              run: npm ci
+
+            # check ts complilation
+            - name: Check Ts Compilation
+              working-directory: web
+              run: npm run build
+
+            # run lint
+            - name: Run ESLint
+              working-directory: web
+              run: npm run lint
+              continue-on-error: true
+
+            # run tests
+            - name: Run Tests
+              working-directory: web
+              run: npm test -- --coverage
+
+    # summary job to print a nice message
+    all-checks-passed:
+        name: All checks passed
+        runs-on: ubuntu-latest
+        needs: [rust, go, react]
+        if: always()
+
+        steps:
+            - name: Check for all jobs status
+              run: |
+                if [[
+                    "${{ needs.rust.result }}" == "failure" ||
+                    "${{ needs.go.result }}" == "failure" ||
+                    "${{ needs.react.result }}" == "failure"
+                ]]; then
+                    echo "[YIKES] Some jobs failed :("
+                    exit 1
+                else
+                    echo "[YAYY] All checks passed!"
+                fi
+            
+            
