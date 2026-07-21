@@ -27,7 +27,7 @@ jobs:
         steps:
             # checkout code - dwnld all rust code
             - name: Checkout code
-              uses: actions/checkout@4
+              uses: actions/checkout@v6
 
             # install rust
             - name: Install Rust
@@ -35,7 +35,7 @@ jobs:
 
             # cache rust deps
             - name: Cache Rust Dependencies
-              uses: Swatinem/rus-cache@v2
+              uses: Swatinem/rust-cache@v2
               with:
                 workspaces: |
                     .
@@ -71,11 +71,11 @@ jobs:
         steps:
             # download code
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             # install go
             - name: Install Go
-              uses: actions/setup-go@v4
+              uses: actions/setup-go@v6
               with:
                 go-version: ${{ matrix.go-version }}
 
@@ -96,7 +96,7 @@ jobs:
 
             # run go linter
             - name: Run Go Lint
-              uses: golangci/golangci-lint-action@v3
+              uses: golangci/golangci-lint-action@v9
               with:
                 version: latest
                 working-directory: services/gateway
@@ -112,11 +112,11 @@ jobs:
         steps:
             # code checkout
             - name: Code Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v7
 
             # setup nodejs
             - name: Setup Nodejs
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v7
               with:
                 # cache npm installations
                 node-version: '18'
