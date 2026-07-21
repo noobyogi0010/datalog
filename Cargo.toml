@@ -24,3 +24,10 @@ thiserror = "1.0"
 tracing = "0.1"
 # sink for tracing, it writes logs to stdout
 tracing-subscriber = "0.3"
+# convert protobuff from go server to rust struct
+prost = "0.12
+# grpc server/client frmwrk
+tonic - "0.10"
+
+[profile.release]
+opt-level = 3
