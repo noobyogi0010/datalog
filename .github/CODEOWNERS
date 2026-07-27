@@ -1,0 +1,6 @@
+# Datalog CODEOWNERS
+# Requires the listed reviewer(s) to approve PRs touching these paths.
+
+# gRPC contracts are the shared interface between Go and Rust —
+# any change here needs explicit sign-off, since a mistake breaks both sides.
+/proto/  @noobyogi0010

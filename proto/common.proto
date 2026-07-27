@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package datalog.v1;
+
+option go_package = "datalog.pb;pb";
+option java_multiple_files = true;
+
+message Value {
+    oneof kind {
+        string string_value = 1;
+        int64 int_value = 2;
+        double double_value = 3;
+        bool bool_value = 4;
+        int64 timestamp_value = 5;
+    }
+}
+
+message Column {
+    string name = 1;
+    string type = 2;
+    string description = 3;
+}
+
+message Row {
+    repeated Value values = 1;
+}
