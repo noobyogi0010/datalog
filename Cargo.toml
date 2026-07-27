@@ -27,7 +27,7 @@ tracing-subscriber = "0.3"
 # convert protobuff from go server to rust struct
 prost = "0.12
 # grpc server/client frmwrk
-tonic - "0.10"
+tonic = "0.10"
 
 [profile.release]
 opt-level = 3
