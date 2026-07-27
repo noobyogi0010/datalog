@@ -1,0 +1,11 @@
+version: v1
+
+plugins:
+  # go stubs
+  - plugin: go
+    out: services/gateway/gen/pb
+    opt: paths=source_relative
+
+  - plugin: go-grpc
+    out: services/gateway/gen/pb
+    opt: paths=source_relative
