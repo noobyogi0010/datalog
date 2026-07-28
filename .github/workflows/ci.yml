@@ -40,6 +40,12 @@ jobs:
                 workspaces: |
                     .
 
+            # install protocccc
+            - name: Install Protoc
+              uses: arduino/setup-protoc@v3
+              with:
+                repo-token: ${{ secrets.GITHUB_TOKEN }}
+
             # check formatting
             - name: Check Rust Formatting
               run: cargo fmt -- --check
