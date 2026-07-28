@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package datalog.v1;
 
-option go_package = "datalog.pb;pb"
+option go_package = "datalog.pb;pb";
 option java_multiple_files = true;
 
 import "common.proto";
@@ -11,7 +11,7 @@ import "intent.proto";
 message QueryRequest {
     string request_id = 1;
     string user_query = 2;
-    string tenant_id = 3
+    string tenant_id = 3;
     string user_id = 4;
     string llm_provider = 5;
     repeated ConversationTurn conversation_history = 6;
@@ -38,7 +38,7 @@ message ExecutionResult {
     string result_id = 1;
     repeated Column columns = 2;
     repeated Row rows = 3;
-    int32 total_rows = 4
+    int32 total_rows = 4;
     string connector_id = 5;
     map<string, string> statistics = 6;
 }
