@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package datalog.v1;
+
+import "datalog/v1/common.proto";
+
+option go_package = "datalog.pb;pb";
+option java_multiple_files = true;
+
+message Intent {
+  string intent_id = 1;
+  string intent_type = 2;
+  repeated Entity entities = 3;
+  repeated Filter filters = 4;
+  repeated Aggregate aggreates = 5;
+  repeated string sort_by = 6;
+  string limit = 7;
+  map<string, string> metadata = 8;
+}
+
+message Entity {
+  string entity_type = 1;
+  string name = 2;
+  string connector_id = 3;
+  string description = 4;
+  repeated string aliases = 5;
+}
+
+message Filter {
+  string column = 1;
+  string operator = 2;
+  repeated Value values = 3;
+  string logical_op = 4;
+}
+
+message Aggregate {
+  string function = 1;
+  string column = 2;
+  string alias = 3;
+  string group_by_column = 4;
+}
+
+message IntentPlan {
+  string plan_id = 1;
+  string user_query = 2;
+  Intent intent = 3;
+  repeated string ambiguities = 4;
+  map<string, string> context = 5;
+}
