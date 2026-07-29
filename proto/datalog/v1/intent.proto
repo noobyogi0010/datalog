@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package datalog.v1;
 
-import "proto/datalog/v1/common.proto";
+import "datalog/v1/common.proto";
 
 option go_package = "datalog.pb;pb";
 option java_multiple_files = true;
