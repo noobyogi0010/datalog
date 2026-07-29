@@ -12,7 +12,11 @@ fn main() {
         .build_client(true)
         .out_dir(&out_dir)
         .compile(
-            &["../../proto/messages.proto", "../../proto/intent.proto"],
+            &[
+                "../../proto/datalog/v1/common.proto",
+                "../../proto/datalog/v1/messages.proto",
+                "../../proto/datalog/v1/intent.proto",
+            ],
             &["../../proto"],
         )
         .unwrap();

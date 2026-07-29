@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package datalog.v1;
+
+import "proto/datalog/v1/common.proto";
+import "proto/datalog/v1/intent.proto";
+
+option go_package = "datalog.pb;pb";
+option java_multiple_files = true;
+
+message QueryRequest {
+  string request_id = 1;
+  string user_query = 2;
+  string tenant_id = 3;
+  string user_id = 4;
+  string llm_provider = 5;
+  repeated ConversationTurn conversation_history = 6;
+  map<string, string> metadata = 7;
+}
+
+message ConversationTurn {
+  string user_message = 1;
+  string assistant_response = 2;
+  int64 timestamp = 3;
+}
+
+message QueryResponse {
+  string request_id = 1;
+  string status = 2;
+  IntentPlan intent_plan = 3;
+  ExecutionResult execution_result = 4;
+  string error_code = 5;
+  string error_message = 6;
+  int64 latency_ms = 7;
+}
+
+message ExecutionResult {
+  string result_id = 1;
+  repeated Column columns = 2;
+  repeated Row rows = 3;
+  int32 total_rows = 4;
+  string connector_id = 5;
+  map<string, string> statistics = 6;
+}
+
+message VizSpec {
+  string spec_id = 1;
+  string chart_type = 2;
+  ExecutionResult data = 3;
+  Axes axes = 4;
+  string title = 5;
+  string description = 6;
+  map<string, string> options = 7;
+}
+
+message Axes {
+  string x_axis = 1;
+  string y_axis = 2;
+  string y_axis_secondary = 3;
+  map<string, string> axis_labels = 4;
+}
+
+message ErrorDetail {
+  string code = 1;
+  string message = 2;
+  string suggestion = 3;
+  map<string, string> context = 4;
+}
